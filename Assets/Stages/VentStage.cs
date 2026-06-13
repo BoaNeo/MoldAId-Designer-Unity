@@ -9,17 +9,17 @@ using Visuals;
 
 namespace Stages
 {
-	public class OutletStage : Stage
+	public class VentStage : Stage
 	{
-		public override string name => "Outlet Runners";
+		public override string name => "Vent Config";
 		public override void BuildUI(StageBarUI ui)
 		{
 			ui.BeginUpdate();
-			List<RunnerOut> outlets = context.GetFeatures<RunnerOut>();
-			ui.AddList("Outlets", outlets.Count, (row,item) => item.Setup(outlets[row].name, outlets[row] == context.GetSelectedFeature()), (row,doubleclick) => context.SelectFeature( outlets[row]) );
-			ui.AddAction("Add Outlet", ()=>
+			List<RunnerOut> vents = context.GetFeatures<RunnerOut>();
+			ui.AddList("Vents", vents.Count, (row,item) => item.Setup(vents[row].name, vents[row] == context.GetSelectedFeature()), (row,doubleclick) => context.SelectFeature( vents[row]) );
+			ui.AddAction("Add Vent", ()=>
 			{
-				AddOutletRunner("Outlet");
+				AddVentRunner("Vent");
 				BuildUI(ui);
 			});
 			ui.EndUpdate();
@@ -31,9 +31,9 @@ namespace Stages
 			foreach (Runner runner in runners)
 			{
 				if(runner is RunnerIn)
-					context.SetVisual(true, runner.output, null, Visual.Mode.Opaque,AppColors.INLET_COLOR, false, Main.SelectionPriority.Secondary);
+					context.SetVisual(true, runner.output, null, Visual.Mode.Opaque,AppColors.GATE_COLOR, false, Main.SelectionPriority.Secondary);
 				else
-					context.SetVisual(true, runner.output, null, Visual.Mode.Opaque,AppColors.OUTLET_COLOR, runner==context.GetSelectedFeature(), Main.SelectionPriority.Primary, () => context.SelectFeature(runner), runner.DebugDraw);
+					context.SetVisual(true, runner.output, null, Visual.Mode.Opaque,AppColors.VENT_COLOR, runner==context.GetSelectedFeature(), Main.SelectionPriority.Primary, () => context.SelectFeature(runner), runner.DebugDraw);
 				foreach(DataRef<XForm> xf in runner.controls)
 					context.SetGizmo( runner==context.GetSelectedFeature(), xf, GizmoHandleFlags.All, GizmoSpace.World);
 			}
@@ -55,7 +55,7 @@ namespace Stages
 		{
 		}
 		
-		private void AddOutletRunner(string featurename)
+		private void AddVentRunner(string featurename)
 		{
 			ImportedPart part = context.GetFeature<ImportedPart>();
 			context.PickFromScene("Select Gate Attachment Point on the <b>Part</b>", new[] {part.output.blockname}, (RaycastHit hit1) =>

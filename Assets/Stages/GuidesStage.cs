@@ -10,7 +10,7 @@ namespace Stages
 {
 	public class GuidesStage : Stage
 	{
-		public override string name => "Pins & Bolts";
+		public override string name => "Pins & Bolt Config";
 		public override void BuildUI(StageBarUI ui)
 		{
 			ui.BeginUpdate();
@@ -55,7 +55,7 @@ namespace Stages
 				context.SetVisual( cutplane.showCutplane, cutplane.plane,cutplane.position, Visual.Mode.Transparent, AppColors.CUTPLANE_COLOR);
 			
 			foreach (Runner runner in context.SetEnabledAll<Runner>(true))
-				context.SetVisual(true, runner.output, null, Visual.Mode.Opaque,runner is RunnerOut ? AppColors.OUTLET_COLOR : AppColors.INLET_COLOR, false, Main.SelectionPriority.Primary);
+				context.SetVisual(true, runner.output, null, Visual.Mode.Opaque,runner is RunnerOut ? AppColors.VENT_COLOR : AppColors.GATE_COLOR, false, Main.SelectionPriority.Primary);
 
 			List<Guide> guides = context.SetEnabledAll<Guide>(true);
 			foreach (Guide guide in guides)

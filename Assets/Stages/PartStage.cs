@@ -13,7 +13,7 @@ namespace Stages
 		private Visual _partVis;
 		private Gizmo _partGiz;
 		private int _renderMode;
-		public override string name => "Part Inspection";
+		public override string name => "Part Config";
 		public override void BuildUI(StageBarUI ui)
 		{
 			ui.BeginUpdate();

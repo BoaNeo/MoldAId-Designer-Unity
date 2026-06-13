@@ -23,7 +23,7 @@ namespace Stages
 		private Visual.Mode[] _renderModes = { Visual.Mode.Opaque, Visual.Mode.Transparent, Visual.Mode.Overhang};
 		private List<Visual> _partVis;
 
-		public override string name => "Export";
+		public override string name => "Export Job";
 		public override void BuildUI(StageBarUI ui)
 		{
 			ui.BeginUpdate();
@@ -66,7 +66,7 @@ namespace Stages
 				_partVis.Add(boolean);
 
 			foreach (Runner runner in context.SetEnabledAll<Runner>(boolout==null))
-				context.SetVisual(runner.enabled,runner.output, null, Visual.Mode.Opaque,AppColors.INLET_COLOR,false,Main.SelectionPriority.Primary);
+				context.SetVisual(runner.enabled,runner.output, null, Visual.Mode.Opaque,AppColors.GATE_COLOR,false,Main.SelectionPriority.Primary);
 
 			Mold mold = context.SetEnabled<Mold>(boolout==null);
 			context.SetVisual(mold?.enabled??false,mold?.output, null, Visual.Mode.Transparent,AppColors.MOLD_COLOR,false,Main.SelectionPriority.Secondary);

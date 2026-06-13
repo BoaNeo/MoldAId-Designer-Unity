@@ -15,7 +15,7 @@ namespace Stages
 		private List<Visual> _partVis;
 		private List<Gizmo> _planeGizmos;
 		private int _renderMode;
-		public override string name => "Cut Plane";
+		public override string name => "Split Line Config";
 
 		private Visual.Mode[] _renderModes = { Visual.Mode.Opaque, Visual.Mode.Transparent, Visual.Mode.Overhang};
 		public override void BuildUI(StageBarUI ui)
@@ -95,7 +95,7 @@ namespace Stages
 			}
 
 			foreach (Runner runner in context.SetEnabledAll<Runner>(true))
-				context.SetVisual(true, runner.output, null,Visual.Mode.Opaque, runner is RunnerOut ? AppColors.OUTLET_COLOR : AppColors.INLET_COLOR);
+				context.SetVisual(true, runner.output, null,Visual.Mode.Opaque, runner is RunnerOut ? AppColors.VENT_COLOR : AppColors.GATE_COLOR);
 
 			Mold mold = context.SetEnabled<Mold>(cutplanes.Count==0);
 			context.SetVisual(mold?.enabled??false, mold?.output, null,Visual.Mode.Transparent, AppColors.MOLD_COLOR, false, Main.SelectionPriority.Secondary);

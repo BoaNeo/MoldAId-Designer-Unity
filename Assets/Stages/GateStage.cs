@@ -9,18 +9,18 @@ using Visuals;
 
 namespace Stages
 {
-	public class InletStage : Stage
+	public class GateStage : Stage
 	{
-		public override string name => "Inlet Runners";
+		public override string name => "Gate Config";
 
 		public override void BuildUI(StageBarUI ui)
 		{
 			ui.BeginUpdate();
-			List<RunnerIn> inlets = context.GetFeatures<RunnerIn>();
-			ui.AddList("Inlets", inlets.Count, (row,item) => item.Setup(inlets[row].name, inlets[row] == context.GetSelectedFeature()), (row,doubleclick) => context.SelectFeature( inlets[row]) );
-			ui.AddAction("Add Inlet", () =>
+			List<RunnerIn> gates = context.GetFeatures<RunnerIn>();
+			ui.AddList("Gates", gates.Count, (row,item) => item.Setup(gates[row].name, gates[row] == context.GetSelectedFeature()), (row,doubleclick) => context.SelectFeature( gates[row]) );
+			ui.AddAction("Add Gate", () =>
 			{
-				AddInletRunner("Inlet");
+				AddGateRunner("Gate");
 				BuildUI(ui);
 			});
 			ui.EndUpdate();
@@ -32,9 +32,9 @@ namespace Stages
 			foreach (Runner runner in runners)
 			{
 				if (runner is RunnerOut)
-					context.SetVisual(true, runner.output, null, Visual.Mode.Opaque,AppColors.OUTLET_COLOR, false, Main.SelectionPriority.Secondary);
+					context.SetVisual(true, runner.output, null, Visual.Mode.Opaque,AppColors.VENT_COLOR, false, Main.SelectionPriority.Secondary);
 				else
-					context.SetVisual(true, runner.output, null, Visual.Mode.Opaque,AppColors.INLET_COLOR, runner==context.GetSelectedFeature(), Main.SelectionPriority.Primary, () => context.SelectFeature(runner), runner.DebugDraw);
+					context.SetVisual(true, runner.output, null, Visual.Mode.Opaque,AppColors.GATE_COLOR, runner==context.GetSelectedFeature(), Main.SelectionPriority.Primary, () => context.SelectFeature(runner), runner.DebugDraw);
 				foreach(DataRef<XForm> xf in runner.controls)
 					context.SetGizmo( runner==context.GetSelectedFeature(), xf, GizmoHandleFlags.All, GizmoSpace.World);
 			}
@@ -56,7 +56,7 @@ namespace Stages
 		{
 		}
 		
-		private void AddInletRunner(string featurename)
+		private void AddGateRunner(string featurename)
 		{
 			if (context == null)
 				return;

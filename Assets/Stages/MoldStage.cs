@@ -16,7 +16,7 @@ namespace Stages
 		private MoldFile _selectedMold;
 		private StageBarUIList _list;
 
-		public override string name => "Mold";
+		public override string name => "Mold Config";
 
 		public override void BuildUI(StageBarUI ui)
 		{
@@ -105,7 +105,7 @@ namespace Stages
 				context.SetVisual(true,cutplane.plane, cutplane.position, Visual.Mode.Transparent,AppColors.CUTPART_COLOR);
 
 			foreach (Runner runner in context.SetEnabledAll<Runner>(true))
-				context.SetVisual(true,runner.output, null, Visual.Mode.Opaque,runner is RunnerOut ? AppColors.OUTLET_COLOR : AppColors.INLET_COLOR);
+				context.SetVisual(true,runner.output, null, Visual.Mode.Opaque,runner is RunnerOut ? AppColors.VENT_COLOR : AppColors.GATE_COLOR);
 
 			context.SelectOneOf(new Feature[]{ mold,part }, new[]{ false,false });
 		}

@@ -115,8 +115,8 @@ public class Main : MonoBehaviour, WorldInputManager.IWorldInputHandler, IStageC
 		_stageManager.AddStage(new PartStage());
 		_stageManager.AddStage(new MoldStage());
 		_stageManager.AddStage(new CutPlaneStage());
-		_stageManager.AddStage(new InletStage());
-		_stageManager.AddStage(new OutletStage());
+		_stageManager.AddStage(new GateStage());
+		_stageManager.AddStage(new VentStage());
 		_stageManager.AddStage(new GuidesStage());
 		_stageManager.AddStage(new ExportStage());
 		_stageManager.RefreshStages();
