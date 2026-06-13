@@ -9,6 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: CrossSection
   m_Shader: {fileID: 4800000, guid: 66e724f02fd8145599190039fa4628ec, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -17,6 +19,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -79,6 +82,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CrossColor: {r: 0.4681647, g: 0.32941177, b: 0.5568628, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _PlaneNormal: {r: 0, g: 0, b: 1, a: 0}
-    - _PlanePosition: {r: 0, g: 0, b: 15.572932, a: 0}
+    - _PlaneNormal: {r: 0.01182532, g: 0.09900905, b: 0.9950163, a: 0}
+    - _PlanePosition: {r: 0.14620888, g: 1.224152, b: 12.302434, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

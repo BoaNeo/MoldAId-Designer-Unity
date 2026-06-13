@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using FeatureGraph;
+using Gizmos;
 using Menu;
 using TMPro;
 using UIComponents;
@@ -18,6 +19,7 @@ namespace PropertySheet
 		[SerializeField] private Image _bottomFade;
 		[SerializeField] private ScrollRect _scrollRect;
 		[SerializeField] private GameObject _deleteButton;
+		[SerializeField] private PropertyUIXForm _xformPrefab;
 		[SerializeField] private PropertyUIVector3 _vectorPrefab;
 		[SerializeField] private PropertyUIFloat _floatPrefab;
 		[SerializeField] private PropertyUIString _stringPrefab;
@@ -206,6 +208,8 @@ namespace PropertySheet
 
 		private PropertyUI GetPrefab(Type t, ShowPropertyAttribute attrib)
 		{
+			if (t == typeof(XForm) || t == typeof(DataRef<XForm>))
+				return _xformPrefab;
 			if (t == typeof(Vector3) || t == typeof(DataRef<Vector3>))
 				return _vectorPrefab;
 			if (t == typeof(float) || t == typeof(DataRef<float>))
