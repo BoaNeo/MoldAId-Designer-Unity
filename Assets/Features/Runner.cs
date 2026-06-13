@@ -43,7 +43,8 @@ namespace Features
 		[FeatureInput] public List<DataRef<XForm>> controls { get; } = new();
 
 		[FeatureOutput] public DataRef<MeshBuilder> output { get; } = new( null );
-		
+
+		/*
 		[ShowProperty(order=1000)]
 		public void AddControlPoint(IStageContext context)
 		{
@@ -71,6 +72,7 @@ namespace Features
 			controls.RemoveAt( controls.Count/2 );
 			diameter.Set(diameter); // TODO: This is a temp hack because removing from the list doesn't change any DataRefs and thus won't trigger a rebuild
 		}
+    */
 
 		private Shape _lastPath;
 		private Vector3[] _points;
