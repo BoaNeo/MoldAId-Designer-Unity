@@ -1,0 +1,138 @@
+#pragma kernel CSMain
+
+#include "Core.cginc"
+
+RWStructuredBuffer<Triangle> triangles;
+RWStructuredBuffer<Triangle> low;
+RWStructuredBuffer<Triangle> high;
+float4x4 transform;
+int count;
+RWStructuredBuffer<int> counters;
+
+#define ZLO -0.0000005
+#define ZHI 0.0000005
+#define TAG 1
+
+#define LOW_TRIANGLE_COUNT 0
+#define HIGH_TRIANGLE_COUNT 1
+
+float3 Cut(float3 p0, float3 p1, bool flip)
+{
+    if (flip)
+    {
+        float3 t = p0;
+        p0 = p1;
+        p1 = t;
+    }
+
+    float3 d = p1-p0;
+/*
+    float l = length(d);
+    if(l<ACCURACY)
+    {
+        float3 p =  (p0+p1)/2;
+        p.z=0.0;
+        return p;
+    }*/
+    float o = -p0.z / d.z;
+    return float3( (p0.x + o * d.x), (p0.y + o * d.y), 0);
+}
+
+//#define Cut(a,b,flip) a - (a.z/(b.z-a.z)) * (b-a)
+
+
+void Tri(float3 p0, float3 p1, float3 p2, float3 tn, int t0,int t1, int t2)
+{
+    if (p0.z > ZLO && p0.z < ZHI)
+        p0.z = 0.0;
+    if (p1.z > ZLO && p1.z < ZHI)
+        p1.z = 0.0;
+    if (p2.z > ZLO && p2.z < ZHI)
+        p2.z = 0.0;
+    if ((p0.z < ZHI) && (p1.z < ZHI) && (p2.z < ZHI))
+    {
+        Add(low,counters,LOW_TRIANGLE_COUNT,p0, p1, p2, tn, 0, t0,t1,t2);
+    }
+    else if ((p0.z > ZLO)&& (p1.z > ZLO) && (p2.z > ZLO))
+    {
+        Add(high,counters,HIGH_TRIANGLE_COUNT,p0, p1, p2, tn, 0, t0,t1,t2);
+    }/*
+    else
+    {
+        // This triangle is exactly in the cutplane - either remove it and leave a hole, or create two opposite triangles and don't tag it's edges (since it's not part of the boundary)
+        Add(low,counters,LOW_TRIANGLE_COUNT,p0, p1, p2, tn,0,t0,t1,t2);
+        Add(high, counters, HIGH_TRIANGLE_COUNT, p0, p1, p2, -tn,0,t0,t1,t2);
+    }*/
+}
+
+bool Crossing(float3 v0, float3 v1)
+{
+    return (v0.z <= ZLO && v1.z >= ZHI) || (v0.z >= ZLO && v1.z <= ZHI);
+}
+
+[numthreads(64,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if(id.x<count)
+    {
+        Triangle t = triangles[id.x];
+        
+        float3 p0 = mul( transform , float4(t.v0.pt,1.0) );
+        float3 p1 = mul( transform , float4(t.v1.pt,1.0) );
+        float3 p2 = mul( transform , float4(t.v2.pt,1.0) );
+        float3 n  = mul( transform , float4(t.n,0.0) );
+        
+        uint t0 = 0, t1 = 0, t2 = 0;
+        if (p0.z > ZLO && p0.z < ZHI)
+            t0 = TAG;
+
+        if (p1.z > ZLO && p1.z < ZHI)
+            t1 = TAG;
+
+        if (p2.z > ZLO && p2.z < ZHI)
+            t2 = TAG;
+
+        // Look at the edges and see if they're all on the same side of the cutplane
+        if ( (p0.z < ZHI) && (p1.z < ZHI) && (p2.z < ZHI) )
+        {
+            Tri(p0, p1, p2, n, t0, t1, t2);
+        }
+        else if ( (p0.z > ZLO) && (p1.z > ZLO) && (p2.z > ZLO) )
+        {
+            Tri(p0, p1, p2, n, t0, t1, t2);
+        }
+        else
+        {
+            float3 v0v1 = p1;
+            float3 v1v2 = p2;
+            float3 v2v0 = p0;
+            int t01 = t1, t12 = t2, t20 = t0;
+            if (Crossing(p0, p1))
+            {
+                t01 = TAG;
+                v0v1 = Cut(p0, p1, t.v0.id < t.v1.id);
+            }
+
+            if (Crossing(p1, p2))
+            {
+                t12 = TAG;
+                v1v2 = Cut(p1, p2, t.v1.id < t.v2.id);
+            }
+
+            if (Crossing(p2, p0))
+            {
+                t20 = TAG;
+                v2v0 = Cut(p2, p0, t.v2.id < t.v0.id);
+            }
+
+//            if( length(p0-v0v1)>ACCURACY && length(v0v1-v2v0)>ACCURACY)
+                Tri(p0, v0v1, v2v0, n, t0, t01, t20);
+  //          if( length(p1-v1v2)>ACCURACY && length(v1v2-v0v1)>ACCURACY)
+                Tri(p1, v1v2, v0v1, n, t1, t12, t01);
+    //        if( length(p2-v2v0)>ACCURACY && length(v2v0-v1v2)>ACCURACY)
+                Tri(p2, v2v0, v1v2, n, t2, t20, t12);
+      //      if( length(v0v1-v1v2)>ACCURACY && length(v1v2-v2v0)>ACCURACY)
+                Tri(v0v1, v1v2, v2v0, n, t01, t12, t20);
+        }
+    }
+}

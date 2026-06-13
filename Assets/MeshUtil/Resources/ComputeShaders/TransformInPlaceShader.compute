@@ -1,0 +1,36 @@
+#pragma kernel CSMain
+
+#include "Core.cginc"
+
+uint faceTag;
+uint faceTagMask;
+uint vertexTag;
+uint vertexTagMask;
+float flip;
+
+RWStructuredBuffer<Triangle> triangles;
+float4x4 transform;
+uint count;
+
+[numthreads(64,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if(id.x<count)
+    {
+        Triangle t = triangles[id.x];
+
+        float3 v0 = flip * t.v2.pt + (1-flip) * t.v0.pt;
+        float3 v2 = flip * t.v0.pt + (1-flip) * t.v2.pt;
+
+        t.v0.pt  = mul( transform , float4(v0,1.0) );
+        t.v1.pt  = mul( transform , float4(t.v1.pt,1.0) );
+        t.v2.pt  = mul( transform , float4(v2,1.0) );
+        t.n      = mul( transform , float4((1-2*flip)*t.n,0.0) );
+        t.tag = (t.tag/faceTagMask)|faceTag;
+        t.v0.tag = (t.v0.tag&vertexTagMask)|vertexTag;
+        t.v1.tag = (t.v1.tag&vertexTagMask)|vertexTag;
+        t.v2.tag = (t.v2.tag&vertexTagMask)|vertexTag;
+        
+        triangles[id.x] = t;
+    }
+}

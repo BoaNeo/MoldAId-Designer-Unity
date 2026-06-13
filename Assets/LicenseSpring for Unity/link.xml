@@ -1,0 +1,5 @@
+<linker>
+  <assembly fullname="System.Reflection" preserve="all" />
+  <assembly fullname="System.Runtime.Serialization" preserve="all"/>
+  <assembly fullname="LicenseSpring" preserve="all" />
+</linker>
