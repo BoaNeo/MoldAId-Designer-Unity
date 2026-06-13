@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Utility;
 
 namespace MeshUtil
 {
@@ -11,14 +13,29 @@ namespace MeshUtil
 
 		public Shape Add(Vector3 p)
 		{
-			_path.Add(p);
+			if(IsValidAt(p, _path.Count))
+				_path.Add(p);
 			return this;
 		}
 		
 		public Shape Insert(int at,Vector3 p)
 		{
-			_path.Insert(at,p);
+			if(IsValidAt(p,at))
+				_path.Insert(at,p);
 			return this;
+		}
+
+		private bool IsValidAt(Vector3 vector3, int at)
+		{
+			if (_path.Count == 0)
+				return true;
+			at %= _path.Count;
+			if (_path[at].AlmostEqual(vector3, 0.001))
+				return false;
+			int before =(at+_path.Count-1) % _path.Count;
+			if (_path[before].AlmostEqual(vector3, 0.001))
+				return false;
+			return true;
 		}
 
 		public Shape AddArc(Vector3 c, Vector3 n, float r, int steps, float from_rad, float to_rad)
@@ -26,9 +43,9 @@ namespace MeshUtil
 			Quaternion look = Quaternion.FromToRotation(Vector3.forward, n);
 			for (int i = 0; i <= steps; i++)
 			{
-				float a = Mathf.Lerp(from_rad, to_rad, i / (float)steps);
-				Vector3 p = c + look * (r * new Vector3(Mathf.Sin(a), Mathf.Cos(a), 0));
-				_path.Add(p);
+				double a = from_rad + (to_rad-from_rad)* i / steps;
+				Vector3 p = c + look * (r * new Vector3((float)Math.Sin(a), (float)Math.Cos(a), 0));
+				Add(p);
 			}
 			return this;
 		}
@@ -45,14 +62,14 @@ namespace MeshUtil
 				Vector3 p0 = Eval(0);
 
 				if(p==0)
-					_path.Add(p0);
+					Add(p0);
 
 				float a = 0;
 				while (a < 1.0f)
 				{
 					Vector3 va = Velocity(a);
 					(a,p0) = Subdivide(va,1.0f);
-					_path.Add(p0);
+					Add(p0);
 				}
 
 				Vector3 Eval(float t)

@@ -46,13 +46,13 @@ namespace Utility
 			return pn.x * (double)pt.x + pn.y * (double)pt.y + d;
 		}
 
-		public static bool AlmostEqual(this Vector3 v0, Vector3 v1)
+		public static bool AlmostEqual(this Vector3 v0, Vector3 v1, double accuracy = Vertex.ACCURACY)
 		{
 			// Yes, it seems like it's worth doing this explicitly instead of doing (v1-v0).sqrMagnitude
 			double dx = v0.x - v1.x;
 			double dy = v0.y - v1.y;
 			double dz = v0.z - v1.z;
-			return Math.Sqrt(dx * dx + dy * dy + dz * dz) <= Vertex.ACCURACY;
+			return Math.Sqrt(dx * dx + dy * dy + dz * dz) <= accuracy;
 		}
 
 		public static bool IsInTriangle(this Vector3 ip, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 n)
