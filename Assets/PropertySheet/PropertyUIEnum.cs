@@ -38,6 +38,7 @@ namespace PropertySheet
 
 		protected override void ShowValueInUI(int value)
 		{
+			_selected = value;
 			for (int i = 0; i < _buttons.Count; i++)
 				_buttons[i].selected = i == value;
 		}
