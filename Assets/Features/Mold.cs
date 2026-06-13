@@ -15,6 +15,9 @@ namespace Features
 	{
 		private MoldFile _moldFile = new MoldFile();
 
+		[ShowProperty(unit = "mm")]
+		[FeatureInput] public DataRef<XForm> inSpruePosition { get; } = new (XForm.identity);
+
 		[ShowProperty(unit = "mm", min=1)]
 		[FeatureInput] public DataRef<float> inSprueHeight { get; } = new (5);
 
@@ -70,6 +73,7 @@ namespace Features
 
 		protected static void BuildSprue(
 			MeshBuilder moldMesh,
+			XForm inSpruePosition,
 			float inSprueHeight,
 			float inSprueDiameter,
 			DataRef<MeshBuilder> outSprueMesh,
@@ -84,7 +88,7 @@ namespace Features
 			int sides = Mathf.Clamp(Mathf.CeilToInt(circ / sprueArcLength),3,120);
 			MeshBuilder sprueMesh = MeshCylinder.GenerateCylinder(new MeshBuilder(), sprueRadius, sprueHeight+penetration, sides);
 
-			XForm sprueTransform = new XForm( new Vector3(0,0, moldMesh.GetBounds().extents.z*2-sprueHeight+penetration), Quaternion.identity);
+			XForm sprueTransform = new XForm( inSpruePosition.position + new Vector3(0,0, moldMesh.GetBounds().extents.z*2-sprueHeight+penetration), Quaternion.identity);
 			//sprueMesh.transform = sprueTransform.localToWorldMatrix;
 
 			outSprueMesh.Set(sprueMesh);

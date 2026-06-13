@@ -32,6 +32,7 @@ namespace Features
 		public static IEnumerator<IYield> Build(bool changing,
 			float height,
 			float diameter,
+			XForm inSpruePosition,
 			float inSprueHeight,
 			float inSprueDiameter,
 			DataRef<MeshBuilder> outSprueMesh,
@@ -45,7 +46,7 @@ namespace Features
 			int sides = Mathf.Clamp(Mathf.CeilToInt(circ / arcLength),3,120);
 			MeshBuilder moldMesh = MeshCylinder.GenerateCylinder(new MeshBuilder(), radius, height, sides);
 			
-			BuildSprue(moldMesh, inSprueHeight, inSprueDiameter, outSprueMesh, outSprueTransform);
+			BuildSprue(moldMesh, inSpruePosition, inSprueHeight, inSprueDiameter, outSprueMesh, outSprueTransform);
 			
 			output.Set(moldMesh);
 

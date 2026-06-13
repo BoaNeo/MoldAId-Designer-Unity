@@ -26,6 +26,7 @@ namespace Features
 
 		public static IEnumerator<IYield> Build(bool changing,
 			PathProperty path,
+			XForm inSpruePosition,
 			float inSprueHeight,
 			float inSprueDiameter,
 			DataRef<MeshBuilder> outSprueMesh,
@@ -34,7 +35,7 @@ namespace Features
 		{
 			yield return Until.RunningInBackground;
 			MeshBuilder moldMesh = MeshImport.Import(new MeshBuilder(), path.path);
-			BuildSprue(moldMesh, inSprueHeight, inSprueDiameter, outSprueMesh, outSprueTransform);
+			BuildSprue(moldMesh, inSpruePosition, inSprueHeight, inSprueDiameter, outSprueMesh, outSprueTransform);
 			yield return Until.RunningOnMainThread;
 			
 			output.Set(moldMesh);

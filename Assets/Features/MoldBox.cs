@@ -44,6 +44,7 @@ namespace Features
 			float width,
 			float depth,
 			float fillet,
+			XForm inSpruePosition,
 			float inSprueHeight,
 			float inSprueDiameter,
 			DataRef<MeshBuilder> outSprueMesh,
@@ -66,7 +67,7 @@ namespace Features
 				
 			MeshBuilder moldMesh = MeshExtrude.Extrude(new MeshBuilder(), shape, n*height, true);
 
-			BuildSprue(moldMesh, inSprueHeight, inSprueDiameter, outSprueMesh, outSprueTransform);
+			BuildSprue(moldMesh, inSpruePosition, inSprueHeight, inSprueDiameter, outSprueMesh, outSprueTransform);
 
 			output.Set(moldMesh);
 			
