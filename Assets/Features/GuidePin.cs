@@ -14,6 +14,9 @@ namespace Features
 		[ShowProperty(values = new [] {"3mm", "4mm", "5mm", "6mm"})]
 		[FeatureInput] public DataRef<int> pinType { get; } = new DataRef<int>( 0 );
 
+		[ShowProperty(unit = "mm", min = 5, max = 250)]
+		[FeatureInput] public DataRef<float> length { get; } = new(0f);
+
 		private struct Pin
 		{
 			public float diameter;
@@ -29,16 +32,18 @@ namespace Features
 
 		public static IEnumerator<IYield> Build(bool changing,
 			int pinType,
+			float length,
 			XForm position,
 			MeshBuilder mold,
-			float penetration,
 			DataRef<MeshBuilder> output)
 		{
 			Bounds bounds = mold.GetBounds();
 
+			float penetration = 0.1f;
+
 //			yield return FeatureManager.YieldUntil.RunningInBackground;
 
-			float h = 2*(bounds.extents.z+penetration);
+			float h = length>0 ? length+penetration : 2*(bounds.extents.z+penetration);
 			MeshBuilder mb = new MeshBuilder();
 		
 			Pin pin = _pins[pinType];

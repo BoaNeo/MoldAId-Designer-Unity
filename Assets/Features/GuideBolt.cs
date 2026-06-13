@@ -39,12 +39,13 @@ namespace Features
 			float length,
 			XForm position,
 			MeshBuilder mold,
-			float penetration,
 			DataRef<MeshBuilder> output)
 		{
 			Bounds bounds = mold.GetBounds();
 
 //			yield return Until.RunningInBackground;
+
+			float penetration = 0.1f;
 
 			Bolt bolt = _bolts[boltType];
 
