@@ -152,7 +152,6 @@ namespace Stages
 			CutPlaneInitial cutplane = context.AddFeature<CutPlaneInitial>(name);
 			cutplane.position.Set( xform);
 			cutplane.input.UseDataFrom(sb.output);
-			cutplane.layerThickness.Set( context.GetProject().layerThickness );
 
 			Activate();
 

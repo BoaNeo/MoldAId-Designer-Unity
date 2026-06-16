@@ -10,7 +10,6 @@ namespace Files
 		public string name;
 		public string partPath;
 		public string printerId;
-		public float layerThickness;
 		public Dictionary<string, DataBlockData> data = new();
 		public Dictionary<string, FeatureData> features = new();
 
@@ -28,7 +27,6 @@ namespace Files
 			stream.Serialize("name", ref name);
 			stream.Serialize("partPath", ref partPath);
 			stream.Serialize("printerId", ref printerId);
-			stream.Serialize("layerThickness", ref layerThickness);
 			stream.Serialize("features",ref features);
 			stream.Serialize("data", ref data);
 		}

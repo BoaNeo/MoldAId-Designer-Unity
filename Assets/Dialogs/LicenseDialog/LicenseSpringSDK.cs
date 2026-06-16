@@ -1,4 +1,4 @@
-﻿#define USE_LICENSE_SPRING
+﻿//#define USE_LICENSE_SPRING
 
 using System;
 using LicenseSpring;
@@ -89,6 +89,7 @@ namespace Dialogs.LicenseDialog
 
 		public void CheckLicense()
 		{
+			#if USE_LICENSE_SPRING
 			try
 			{
 				_licenseManager.CurrentLicense().LocalCheck();
@@ -98,6 +99,7 @@ namespace Dialogs.LicenseDialog
 			{
 				Debug.LogError($"No Valid License ({e})!");
 			}
+			#endif
 		}
 
 		public void ActivateLicense(string licenseKey)

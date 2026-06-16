@@ -1,4 +1,5 @@
 using System;
+using SFB;
 
 namespace Plugins.StandaloneFileBrowser {
     public struct ExtensionFilter {

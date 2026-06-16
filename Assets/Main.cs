@@ -51,88 +51,90 @@ public class Main : MonoBehaviour, WorldInputManager.IWorldInputHandler, IStageC
 
 		_licenseManager.InitializeSDK();
 
-		//IfHasLicense(() =>
-		//{
-		PreferencesFile.Load();
-
-		// Add World Input handlers in order of importance - CameraManager should always be last!
-		WorldInputManager.instance.RegisterInputHandler( _gizmos );
-		WorldInputManager.instance.RegisterInputHandler( this );
-		WorldInputManager.instance.RegisterInputHandler( CameraManager.instance );
-
-		_menuBar.BeginUpdate(RectTransform.Axis.Horizontal);
-		_menuBar.AddSubMenu("File", filemenu =>
+		IfHasLicense(() =>
 		{
-			filemenu.AddItem("New", ShowNewProjectDialog);
-			filemenu.AddItem("Load", ShowOpenProjectDialog);
-			filemenu.AddSpacing();
-			filemenu.AddItem("Reload", ReloadProject);
-			filemenu.AddSpacing();
-			filemenu.AddItem("Save", true,false, KeyCode.S, ()=>SaveProject(false));
-			filemenu.AddItem("Save As...", ()=>SaveProject(true));
-			filemenu.AddSpacing();
-			filemenu.AddItem("Quit", Quit);
-		});
-		_menuBar.AddSubMenu("Edit", editmenu =>
-		{
-			editmenu.AddItem("Undo", true, false, KeyCode.Z, UndoManager.Undo );
-			editmenu.AddItem("Redo", true, true, KeyCode.Z, UndoManager.Redo);
-		});
-		_menuBar.AddSubMenu("View", viewmenu =>
-		{
-			viewmenu.AddItem("Home", true, false, KeyCode.Keypad5, CameraManager.instance.OnResetFocus );
-			viewmenu.AddSpacing();
-			viewmenu.AddItem("Perspective", false,false,KeyCode.KeypadPlus, CameraManager.instance.OnSetCameraPerspective );
-			viewmenu.AddItem("Orthographic", false,false,KeyCode.KeypadMinus, CameraManager.instance.OnSetCameraOrth );
-			viewmenu.AddSpacing();
-			viewmenu.AddItem("Top", false,false,KeyCode.Keypad8, CameraManager.instance.SetViewTop );
-			viewmenu.AddItem("Bottom", false,false,KeyCode.Keypad2, CameraManager.instance.SetViewBottom );
-			viewmenu.AddItem("Left", false,false,KeyCode.Keypad4,CameraManager.instance.SetViewLeft );
-			viewmenu.AddItem("Right",false,false,KeyCode.Keypad6, CameraManager.instance.SetViewRight );
-			viewmenu.AddItem("Front", false,false,KeyCode.Keypad3, CameraManager.instance.SetViewFront );
-			viewmenu.AddItem("Back",false,false,KeyCode.Keypad9, CameraManager.instance.SetViewBack );
-		});
-		_menuBar.AddSubMenu("Settings", settingsmenu =>
-		{
-//					settingsmenu.AddItem("Mold Library...", () => { });
-//					settingsmenu.AddItem("Printers...", () => { });
-//					settingsmenu.AddItem("Injection Machines...", () => { });
-//					settingsmenu.AddSpacing();
-			settingsmenu.AddItem("Preferences...", ShowPreferences );
-		});
-		_menuBar.AddSubMenu("About", aboutmenu =>
-		{
-			aboutmenu.AddItem( $"Mold Designer V{Application.version}", () => {{ }});
-			aboutmenu.AddItem( $"{(_licenseManager.IsTrial?"Trial ":"")}License Key: {_licenseManager.LicenseKey}", () => { });
-			if(_licenseManager.ExpiresInDays!=int.MaxValue)
-				aboutmenu.AddItem( $"Expires in {_licenseManager.ExpiresInDays} days", () => {{ }});
-			aboutmenu.AddItem( "Submit Bug Report", () => { FindObjectOfType<UserReportingScript>().CreateUserReport( _features ); });
-		});
-		_menuBar.EndUpdate();
+			PreferencesFile.Load();
 
-		_stageManager.SetContext( this );
+			// Add World Input handlers in order of importance - CameraManager should always be last!
+			WorldInputManager.instance.RegisterInputHandler( _gizmos );
+			WorldInputManager.instance.RegisterInputHandler( this );
+			WorldInputManager.instance.RegisterInputHandler( CameraManager.instance );
 
-		_stageManager.AddStage(new PartStage());
-		_stageManager.AddStage(new MoldStage());
-		_stageManager.AddStage(new CutPlaneStage());
-		_stageManager.AddStage(new GateStage());
-		_stageManager.AddStage(new VentStage());
-		_stageManager.AddStage(new GuidesStage());
-		_stageManager.AddStage(new ExportStage());
-		_stageManager.RefreshStages();
+			_menuBar.BeginUpdate(RectTransform.Axis.Horizontal);
+			_menuBar.AddSubMenu("File", filemenu =>
+			{
+				filemenu.AddItem("New", ShowNewProjectDialog);
+				filemenu.AddItem("Load", ShowOpenProjectDialog);
+				filemenu.AddSpacing();
+				filemenu.AddItem("Reload", ReloadProject);
+				filemenu.AddSpacing();
+				filemenu.AddItem("Save", true,false, KeyCode.S, ()=>SaveProject(false));
+				filemenu.AddItem("Save As...", ()=>SaveProject(true));
+				filemenu.AddSpacing();
+				filemenu.AddItem("Quit", Quit);
+			});
+			_menuBar.AddSubMenu("Edit", editmenu =>
+			{
+				editmenu.AddItem("Undo", true, false, KeyCode.Z, UndoManager.Undo );
+				editmenu.AddItem("Redo", true, true, KeyCode.Z, UndoManager.Redo);
+			});
+			_menuBar.AddSubMenu("View", viewmenu =>
+			{
+				viewmenu.AddItem("Home", true, false, KeyCode.Keypad5, CameraManager.instance.OnResetFocus );
+				viewmenu.AddSpacing();
+				viewmenu.AddItem("Perspective", false,false,KeyCode.KeypadPlus, CameraManager.instance.OnSetCameraPerspective );
+				viewmenu.AddItem("Orthographic", false,false,KeyCode.KeypadMinus, CameraManager.instance.OnSetCameraOrth );
+				viewmenu.AddSpacing();
+				viewmenu.AddItem("Top", false,false,KeyCode.Keypad8, CameraManager.instance.SetViewTop );
+				viewmenu.AddItem("Bottom", false,false,KeyCode.Keypad2, CameraManager.instance.SetViewBottom );
+				viewmenu.AddItem("Left", false,false,KeyCode.Keypad4,CameraManager.instance.SetViewLeft );
+				viewmenu.AddItem("Right",false,false,KeyCode.Keypad6, CameraManager.instance.SetViewRight );
+				viewmenu.AddItem("Front", false,false,KeyCode.Keypad3, CameraManager.instance.SetViewFront );
+				viewmenu.AddItem("Back",false,false,KeyCode.Keypad9, CameraManager.instance.SetViewBack );
+			});
+			_menuBar.AddSubMenu("Settings", settingsmenu =>
+			{
+	//					settingsmenu.AddItem("Mold Library...", () => { });
+	//					settingsmenu.AddItem("Printers...", () => { });
+	//					settingsmenu.AddItem("Injection Machines...", () => { });
+	//					settingsmenu.AddSpacing();
+				settingsmenu.AddItem("Preferences...", ShowPreferences );
+			});
+			_menuBar.AddSubMenu("About", aboutmenu =>
+			{
+				aboutmenu.AddItem( $"Mold Designer V{Application.version}", () => {{ }});
+				#if USE_LICENSE_SPRING
+				aboutmenu.AddItem( $"{(_licenseManager.IsTrial?"Trial ":"")}License Key: {_licenseManager.LicenseKey}", () => { });
+				if(_licenseManager.ExpiresInDays!=int.MaxValue)
+					aboutmenu.AddItem( $"Expires in {_licenseManager.ExpiresInDays} days", () => {{ }});
+				#endif
+				aboutmenu.AddItem( "Submit Bug Report", () => { FindObjectOfType<UserReportingScript>().CreateUserReport( _features ); });
+			});
+			_menuBar.EndUpdate();
 
-		PropertyUIAction.context = this; // TODO: This is a bit hacky. Considered passing context to propertysheet but that also felt icky - at least this way it's limited to the action button.
+			_stageManager.SetContext( this );
 
-//				DialogManager.Show<MessageBox>().WithMessage($"Mold Designer V{Application.version} BETA", "This software is currently in beta testing.\n\nBeta software, while functionally complete and generally able to perform its primary function, may be subject to change and will likely contain bugs, inconsistencies and may require workarounds for some features to work as intended.\n\nPlease use the bug reporting feature found in the top menubar to report any issue you encounter.\n\nThank You!",
-//					() =>
-//					{
-		string message = PreferencesFile.current.Validate();
-		if (message!=null)
-			DialogManager.Show<MessageBox>().WithMessage("Invalid Preferences!", message, ShowPreferences);
-		else
-			ShowOpenProjectDialog();
-//					});
-//			}, true);
+			_stageManager.AddStage(new PartStage());
+			_stageManager.AddStage(new MoldStage());
+			_stageManager.AddStage(new CutPlaneStage());
+			_stageManager.AddStage(new GateStage());
+			_stageManager.AddStage(new VentStage());
+			_stageManager.AddStage(new GuidesStage());
+			_stageManager.AddStage(new ExportStage());
+			_stageManager.RefreshStages();
+
+			PropertyUIAction.context = this; // TODO: This is a bit hacky. Considered passing context to propertysheet but that also felt icky - at least this way it's limited to the action button.
+
+	//				DialogManager.Show<MessageBox>().WithMessage($"Mold Designer V{Application.version} BETA", "This software is currently in beta testing.\n\nBeta software, while functionally complete and generally able to perform its primary function, may be subject to change and will likely contain bugs, inconsistencies and may require workarounds for some features to work as intended.\n\nPlease use the bug reporting feature found in the top menubar to report any issue you encounter.\n\nThank You!",
+	//					() =>
+	//					{
+			string message = PreferencesFile.current.Validate();
+			if (message!=null)
+				DialogManager.Show<MessageBox>().WithMessage("Invalid Preferences!", message, ShowPreferences);
+			else
+				ShowOpenProjectDialog();
+	//					});
+		}, true);
 	}
 
 	private void Update()
@@ -277,93 +279,93 @@ public class Main : MonoBehaviour, WorldInputManager.IWorldInputHandler, IStageC
 		}
 		then();
 	}
-/*
-		private void IfHasLicense(Action callback, bool showTrialMessage = false)
+
+	private void IfHasLicense(Action callback, bool showTrialMessage = false)
+	{
+		_licenseManager.CheckLicense();
+		
+		if (!_licenseManager.HasLicense || _licenseManager.IsExpired)
 		{
-			_licenseManager.CheckLicense();
-			
-			if (!_licenseManager.HasLicense || _licenseManager.IsExpired)
+			_menuBar.gameObject.SetActive(false);
+			DialogManager.Show<LicenseDialog>().WithManager(_licenseManager, licenseOk =>
 			{
-				_menuBar.gameObject.SetActive(false);
-				DialogManager.Show<LicenseDialog>().WithManager(_licenseManager, licenseOk =>
-				{
-					if (licenseOk)
-						callback();
-					else
-						Application.Quit();
-				});
-				return;
-			}
-			
-			if (_licenseManager.HasLicense && _licenseManager.IsTrial && showTrialMessage)
-			{
-				DialogManager.Show<MessageBox>().WithMessage("Trial License!", $"Your trial license expires in {_licenseManager.DaysRemaining} days", () =>
-				{
+				if (licenseOk)
 					callback();
-				});
-			}
-			else
-				callback();
+				else
+					Application.Quit();
+			});
+			return;
 		}
-*/		
+		
+		if (_licenseManager.HasLicense && _licenseManager.IsTrial && showTrialMessage)
+		{
+			DialogManager.Show<MessageBox>().WithMessage("Trial License!", $"Your trial license expires in {_licenseManager.DaysRemaining} days", () =>
+			{
+				callback();
+			});
+		}
+		else
+			callback();
+	}
+		
 	private void LoadProject(ProjectFile project)
 	{
 		if (project != null)
 		{
-			//IfHasLicense(() =>
-			//{
-			ClearAllFeatures(() =>
+			IfHasLicense(() =>
 			{
-				try
+				ClearAllFeatures(() =>
 				{
-					project = _features.VersionCheck(project, out string message);
-
-					if (message != null)
+					try
 					{
-						DialogManager.Show<MessageBox>().WithMessage("Project Version Error!", message, () =>
+						project = _features.VersionCheck(project, out string message);
+
+						if (message != null)
+						{
+							DialogManager.Show<MessageBox>().WithMessage("Project Version Error!", message, () =>
+							{
+								ContinueLoading(project);
+							});
+						}
+						else
 						{
 							ContinueLoading(project);
-						});
-					}
-					else
-					{
-						ContinueLoading(project);
-					}
-
-					void ContinueLoading(ProjectFile project)
-					{
-						_project = project;
-						if (_project != null)
-						{
-							_features.LoadFeatures(_project);
-							UndoManager.MarkSaved();
-
-							ImportedPart part = _features.GetFeature<ImportedPart>("Part");
-							if (part == null)
-							{
-								part = _features.AddFeature<ImportedPart>( "Part");
-								part.originalPath.Set(project.partPath);
-								part.transform.Set( new XForm(new Vector3(0,0, 0.5f * _project.printer.volume.z), Quaternion.identity));
-							}
-							part.RefreshLocalPath(PathHelper.RemoveLastPathElement(project.path));
-
-							_printBox.Configure(_project.printer);
-								
-							SelectFeature(_features.GetFeature<ImportedPart>());
 						}
-						if(_project==null)
-							ShowOpenProjectDialog();
-						else
-							CameraManager.instance.FocusOnBoundingBox( new Bounds( new Vector3(0,0,_project.printer.volume.z/2.0f) ,_project.printer.volume ) );
+
+						void ContinueLoading(ProjectFile project)
+						{
+							_project = project;
+							if (_project != null)
+							{
+								_features.LoadFeatures(_project);
+								UndoManager.MarkSaved();
+
+								ImportedPart part = _features.GetFeature<ImportedPart>("Part");
+								if (part == null)
+								{
+									part = _features.AddFeature<ImportedPart>( "Part");
+									part.originalPath.Set(project.partPath);
+									part.transform.Set( new XForm(new Vector3(0,0, 0.5f * _project.printer.volume.z), Quaternion.identity));
+								}
+								part.RefreshLocalPath(PathHelper.RemoveLastPathElement(project.path));
+
+								_printBox.Configure(_project.printer);
+									
+								SelectFeature(_features.GetFeature<ImportedPart>());
+							}
+							if(_project==null)
+								ShowOpenProjectDialog();
+							else
+								CameraManager.instance.FocusOnBoundingBox( new Bounds( new Vector3(0,0,_project.printer.volume.z/2.0f) ,_project.printer.volume ) );
+						}
 					}
-				}
-				catch (Exception e)
-				{
-					DialogManager.Show<MessageBox>().WithMessage("Failed to Load Project", $"Opening '{project.name}' failed with\n{e.Message}", () => {});
-					Debug.LogError(e);
-				}
+					catch (Exception e)
+					{
+						DialogManager.Show<MessageBox>().WithMessage("Failed to Load Project", $"Opening '{project.name}' failed with\n{e.Message}", () => {});
+						Debug.LogError(e);
+					}
+				});
 			});
-			//});
 		}
 	}
 		

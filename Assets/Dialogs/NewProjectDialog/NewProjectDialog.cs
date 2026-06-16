@@ -13,18 +13,15 @@ namespace Dialogs
 		[SerializeField] private TMP_InputField _partPath;
 		[SerializeField] private GridOnDemand _printerGrid;
 		[SerializeField] private PrinterListItem _printerItemPrefab;
-		[SerializeField] private TMP_InputField _layerThickness;
 
 		private Action<ProjectFile> _onDone;
 		private int _selectedPrinter;
-		private float _selectedLayer;
 		private bool _ignoreInput;
 
 		public void Setup(Action<ProjectFile> action)
 		{
 			_onDone = action;
 			_selectedPrinter = 0;
-			_selectedLayer = Library<PrinterFile>.Load()[_selectedPrinter].defaultLayerThickness;
 			Refresh();
 		}
 
@@ -50,12 +47,9 @@ namespace Dialogs
 				cell.Setup(lib[row], row == _selectedPrinter, () =>
 				{
 					_selectedPrinter = row;
-					_selectedLayer = lib[row].defaultLayerThickness;
 					Refresh();
 				});
 			});
-
-			_layerThickness.text = (Mathf.RoundToInt(_selectedLayer * 1000)).ToString();
 			
 			_ignoreInput = false;
 		}
@@ -64,17 +58,6 @@ namespace Dialogs
 		{
 			_onDone(null);
 			Hide();
-		}
-
-		public void OnLayerThicknessChanged()
-		{
-			if (_ignoreInput)
-				return;
-
-			PrinterFile printer = Library<PrinterFile>.Load()[_selectedPrinter];
-			float.TryParse(_layerThickness.text, out _selectedLayer);
-			_selectedLayer = Mathf.Clamp(	_selectedLayer/1000.0f, printer.minLayerThickness, printer.maxLayerThickness);
-			Refresh();
 		}
 
 		public void OnCreate()
@@ -94,7 +77,6 @@ namespace Dialogs
 
 			project.partPath = _partPath.text;
 			project.printerId = printer.name;
-			project.layerThickness = _selectedLayer;
 
 			_onDone(project);
 			Hide();
